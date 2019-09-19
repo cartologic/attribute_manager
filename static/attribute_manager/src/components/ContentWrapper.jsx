@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import PublishForm from './PublishForm'
+import ResourceSelectInput from './ResourceSelectInput'
 import ResourceSelectDialog from './ResourceSelectDialog'
 import ResultsDialog from './ResultsDialog'
 import OutLayersDialog from './OutLayersDialog'
@@ -14,13 +15,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 export default (props) => {
+  const {
+    resourceSelectInput,
+    resourceSelectDialog,
+  } = props
   const classes = useStyles();
   return (
     <div>
       <CssBaseline />
       <Container maxWidth="md">
         <Paper className={classes.root}>
-          <h1>Hello World</h1>
+          <ResourceSelectInput {...resourceSelectInput}/>
+          <ResourceSelectDialog {...resourceSelectDialog}/>
         </Paper>
       </Container>
     </div>

@@ -12,6 +12,10 @@ export default class App extends Component {
                 open: false,
                 resources: [],
             },
+            resourceSelectInput: {
+                selectedResource: undefined,
+                errors: {},
+            },
             publishForm: {
                 selectedResource: undefined,
                 attributes: [],
@@ -89,7 +93,7 @@ export default class App extends Component {
     }
     fetchResources() {
         const params = {
-            'geom_type': 'point',
+            'limit': '20',
         }
         const url = UrlAssembler(this.urls.layersAPI).query(params).toString()
         return fetch(url, {
@@ -124,8 +128,8 @@ export default class App extends Component {
     onResourceSelect(resource) {
         this.checkedLineFeatures = []
         this.setState({
-            publishForm: {
-                ...this.state.publishForm,
+            resourceSelectInput: {
+                ...this.state.resourceSelectInput,
                 selectedResource: resource
             },
             resourceSelectDialog: {
@@ -134,9 +138,9 @@ export default class App extends Component {
             },
             loading: true
         },
-            () => {
-                this.getLayerAttributes()
-            }
+            // () => {
+            //     this.getLayerAttributes()
+            // }
         )
     }
     getLayerAttributes() {
@@ -406,22 +410,16 @@ export default class App extends Component {
     render() {
         const props = {
             urls: this.urls,
-            resourceSelectProps: {
+            resourceSelectDialog: {
                 ...this.state.resourceSelectDialog,
                 handleClose: this.resourceSelectDialogClose,
                 onResourceSelect: this.onResourceSelect,
                 selectedResource: this.state.publishForm.selectedResource,
                 loading: this.state.loading,
             },
-            publishForm: {
-                ...this.state.publishForm,
+            resourceSelectInput: {
+                ...this.state.resourceSelectInput,
                 resourceSelectDialogOpen: this.resourceSelectDialogOpen,
-                sortByChange: this.publishChange,
-                sortByFilter,
-                groupByChange: this.publishChange,
-                groupByFilter,
-                outLayerNameChange: this.publishChange,
-                onApply: this.apply,
                 loading: this.state.loading
             },
             resultsDialog: {
