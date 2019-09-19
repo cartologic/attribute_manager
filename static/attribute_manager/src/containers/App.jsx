@@ -16,6 +16,9 @@ export default class App extends Component {
                 selectedResource: undefined,
                 errors: {},
             },
+            attributeManager:{
+                attributes: [],
+            },
             publishForm: {
                 selectedResource: undefined,
                 attributes: [],
@@ -40,6 +43,7 @@ export default class App extends Component {
         this.urls = globalURLS
         this.checkedLineFeatures = []
         this.fetchResources = this.fetchResources.bind(this)
+        this.onAddAttr = this.onAddAttr.bind(this)
         this.resourceSelectDialogClose = this.resourceSelectDialogClose.bind(this)
         this.resourceSelectDialogOpen = this.resourceSelectDialogOpen.bind(this)
         this.resultsDialogClose = this.resultsDialogClose.bind(this)
@@ -414,6 +418,11 @@ export default class App extends Component {
                 ...this.state.resourceSelectInput,
                 resourceSelectDialogOpen: this.resourceSelectDialogOpen,
                 loading: this.state.loading
+            },
+            attributeManager:{
+                ...this.state.attributeManager,
+                selectedResource: this.state.resourceSelectInput.selectedResource,
+                onAddAttr: this.onAddAttr,
             },
             resultsDialog: {
                 ...this.state.resultsDialog,
