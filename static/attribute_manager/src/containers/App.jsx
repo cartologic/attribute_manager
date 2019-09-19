@@ -138,33 +138,26 @@ export default class App extends Component {
             },
             loading: true
         },
-            // () => {
-            //     this.getLayerAttributes()
-            // }
+            this.getLayerAttributes
         )
     }
-    getLayerAttributes() {
-        const layer = this.state.publishForm.selectedResource
+    async getLayerAttributes() {
+        const layer = this.state.resourceSelectInput.selectedResource
         const params = {
-            'layer__id': layer.id
+            'layer_name': layer.name
         }
-        const url = UrlAssembler(this.urls.attributesAPI).query(params).toString()
-        return fetch(url, {
+        const url = UrlAssembler(this.urls.get_attributes).query(params).toString()
+        const res = await  fetch(url, {
             method: 'GET',
             credentials: 'include',
-            headers: {
-                "X-CSRFToken": getCRSFToken(),
-            }
-        }).then((response) => {
-            return response.json()
-        }).then(data => {
-            this.setState({
-                publishForm: {
-                    ...this.state.publishForm,
-                    attributes: data.objects,
-                },
-                loading: false
-            })
+        })
+        const data = await res.json() 
+        this.setState({
+            attributeManager: {
+                ...this.state.attributeManager,
+                attributes: data.objects,
+            },
+            loading: false
         })
     }
     publishChange(e) {
