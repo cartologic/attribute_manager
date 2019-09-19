@@ -27,6 +27,24 @@ def index(request):
 
 
 @login_required
+def get_attributes(request):
+    if request.method == 'GET':
+        layer_name = request.GET.get('layer_name', None)
+        if layer_name:
+            # TODO: resolve layer first of all with permission can change resource base
+            connection_string = create_connection_string()
+            lam = LayerAttributeManager(connection_string)
+            attrs = lam.get_attributes(str(layer_name))
+            json_response = {"total": len(attrs), 'objects': attrs}
+            return JsonResponse(json_response, status=200)
+        else:
+            json_response = {"status": False,
+                                 "message": "Empty layer_name string!", }
+            return JsonResponse(json_response, status=500)
+
+
+
+@login_required
 def test_logic(request):
     connection_string = create_connection_string()
     lam = LayerAttributeManager(connection_string)
