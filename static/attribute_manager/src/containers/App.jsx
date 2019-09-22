@@ -15,6 +15,8 @@ export default class App extends Component {
                 open: false,
                 attributeType: 4,
                 attributeName: '',
+                success: false,
+                fail: false,
             },
             resourceSelectInput: {
                 selectedResource: undefined,
@@ -82,7 +84,11 @@ export default class App extends Component {
         this.setState({
             addAttributeDialog: {
                 ...this.state.addAttributeDialog,
-                open: false
+                open: false,
+                success: false,
+                fail: false,
+                attributeName: '',
+                attribute_type: 4,
             }
         })
     }
@@ -103,6 +109,7 @@ export default class App extends Component {
         })
     }
     async onAddAttribute(){
+        this.setState({loading: true})
         const attributeName = this.state.addAttributeDialog.attributeName
         const attributeType = this.state.addAttributeDialog.attributeType
         const layerName = this.state.resourceSelectInput.selectedResource.name
@@ -117,10 +124,26 @@ export default class App extends Component {
             credentials: 'same-origin',
         })
         if (res.status == 200) {
-            console.log("Success")
+            this.setState({
+                loading: false,
+                addAttributeDialog:{
+                    ...this.state.addAttributeDialog,
+                    success: true,
+                    fail: false,
+                }
+            },
+            this.getLayerAttributes
+            )
         }
         if (res.status == 500){
-            console.log('Failed to add attribute!')
+            this.setState({
+                loading: false,
+                addAttributeDialog:{
+                    ...this.state.addAttributeDialog,
+                    success: false,
+                    fail: true,
+                }
+            })
         }
     }
     resultsDialogClose() {

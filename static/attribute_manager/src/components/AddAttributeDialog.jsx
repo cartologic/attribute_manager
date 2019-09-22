@@ -45,7 +45,9 @@ export default (props) => {
     attributeName,
     attributeType,
     onChange,
-    onAdd
+    onAdd,
+    success,
+    fail,
   } = props
   const OGRFieldTypes = [
     { name: 'OFTString', readableName: 'Text', code: '4' },
@@ -72,6 +74,14 @@ export default (props) => {
           {
             error &&
             <FormHelperText error>{`Error: Invalid attribute name! Must be Alphanumeric Ex: table_name_1, Max length: 63 character`}</FormHelperText>
+          }
+          {
+            success &&
+            <FormHelperText>{`Attribute Created Successfully!`}</FormHelperText>
+          }
+          {
+            fail &&
+            <FormHelperText error>{`Failed to create attribute!`}</FormHelperText>
           }
           <form className={classes.root} autoComplete="off" id={'publish-select-form'}>
             <FormControl className={classes.formControl} error={false}>
