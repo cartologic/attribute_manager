@@ -55,7 +55,7 @@ export default (props) => {
     } = props
     return (
         <div className={classes.root}>
-            <Typography variant="subtitle1" className={classes.title}>2. Add Attribute</Typography>
+            <Typography variant="subtitle1" className={classes.title}>2. Current Attributes</Typography>
             <div className={classes.tableWrapper}>
                 <Table className={classes.table} size="small">
                     <TableHead>
