@@ -10,6 +10,7 @@ export default class App extends Component {
             resourceSelectDialog: {
                 open: false,
                 resources: [],
+                searchValue: '',
             },
             addAttributeDialog: {
                 open: false,
@@ -49,6 +50,7 @@ export default class App extends Component {
         this.urls = globalURLS
         this.checkedLineFeatures = []
         this.fetchResources = this.fetchResources.bind(this)
+        this.onSearchChange = this.onSearchChange.bind(this)
         this.resourceSelectDialogClose = this.resourceSelectDialogClose.bind(this)
         this.addAttributeDialogClose = this.addAttributeDialogClose.bind(this)
         this.addAttributeDialogOpen = this.addAttributeDialogOpen.bind(this)
@@ -68,9 +70,10 @@ export default class App extends Component {
         this.setState({
             resourceSelectDialog: {
                 ...this.state.resourceSelectDialog,
+                searchValue: '',
                 open: false
             }
-        })
+        }, this.fetchResources)
     }
     resourceSelectDialogOpen() {
         this.setState({
@@ -173,6 +176,7 @@ export default class App extends Component {
     fetchResources() {
         const params = {
             'limit': '20',
+            'title__contains': this.state.resourceSelectDialog.searchValue,
         }
         const url = UrlAssembler(this.urls.layersAPI).query(params).toString()
         return fetch(url, {
@@ -479,6 +483,16 @@ export default class App extends Component {
         }
         this.checkedLineFeatures = [...lineNames]
     }
+    onSearchChange(e){
+        this.setState({
+            resourceSelectDialog: {
+                ...this.state.resourceSelectDialog,
+                searchValue: e.target.value,
+            }
+        },
+        this.fetchResources
+        )
+    }
     render() {
         const props = {
             urls: this.urls,
@@ -488,6 +502,7 @@ export default class App extends Component {
                 onResourceSelect: this.onResourceSelect,
                 selectedResource: this.state.publishForm.selectedResource,
                 loading: this.state.loading,
+                onSearchChange: this.onSearchChange,
             },
             resourceSelectInput: {
                 ...this.state.resourceSelectInput,

@@ -52,6 +52,8 @@ export default (props) => {
     onResourceSelect,
     selectedResource,
     loading,
+    searchValue,
+    onSearchChange,
   } = props
   const classes = useStyles()
   return (
@@ -65,7 +67,7 @@ export default (props) => {
         onClose={handleClose}
       >
         <DialogTitle className={classes.dialogTitle}>
-          Select Point Layer
+          Select Layer
           {
             loading &&
             <CircularProgress className={classes.progress} size={15} />
@@ -73,8 +75,6 @@ export default (props) => {
         </DialogTitle>
         <DialogContent>
           <div className={classes.searchArea}>
-            {
-              false &&
               <TextField
                 id="outlined-bare"
                 className={classes.searchInput}
@@ -82,8 +82,9 @@ export default (props) => {
                 variant="outlined"
                 inputProps={{ 'aria-label': 'bare' }}
                 placeholder="Search Layers"
+                value={searchValue}
+                onChange={onSearchChange}
               />
-            }
             {
               selectedResource &&
               <ListItem key={selectedResource.id} className={classes.selectedItem}>
