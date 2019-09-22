@@ -39,9 +39,40 @@ def get_attributes(request):
             return JsonResponse(json_response, status=200)
         else:
             json_response = {"status": False,
-                                 "message": "Empty layer_name string!", }
+                             "message": "Empty layer_name string!", }
             return JsonResponse(json_response, status=500)
 
+
+@login_required
+def create_attribute(request):
+    if request.method == 'POST':
+        layer_name = request.POST.get('layer_name', None)
+        attribute_name = request.POST.get('attribute_name', None)
+        attribute_type = request.POST.get('attribute_type', None)
+
+        # 1. Create attribute Process
+        connection_string = create_connection_string()
+        lam = LayerAttributeManager(connection_string)
+        try:
+            index = lam.add_attribute(
+                str(layer_name),
+                str(attribute_name),
+                int(attribute_type),
+            )
+        except Exception as e:
+            print('Error while creating attribute!', e)
+            json_response = {"status": False,
+                             "message": "Error while creating attribute!"}
+            return JsonResponse(json_response, status=500)
+
+        # 2. Recalculate attributes in GeoServer
+        recalculate_geoserver_layer_attributes(layer_name)
+
+        # 3. Set Attributes in GeoNode
+        layer = Layer.objects.get(name=layer_name)
+        set_attributes_from_geoserver(layer, overwrite=True)
+
+        return JsonResponse({'success': True}, status=200)
 
 
 @login_required
