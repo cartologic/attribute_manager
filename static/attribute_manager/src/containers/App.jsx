@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import MainPage from '../components/MainPage'
-import { getCRSFToken, groupByFilter } from '../utils'
 import UrlAssembler from 'url-assembler'
-const sortByFilter = groupByFilter
+import { getCRSFToken } from '../utils'
 export default class App extends Component {
     constructor(props) {
         super(props)
@@ -11,6 +10,11 @@ export default class App extends Component {
             resourceSelectDialog: {
                 open: false,
                 resources: [],
+            },
+            addAttributeDialog: {
+                open: false,
+                attributeType: 4,
+                attributeName: '',
             },
             resourceSelectInput: {
                 selectedResource: undefined,
@@ -43,8 +47,11 @@ export default class App extends Component {
         this.urls = globalURLS
         this.checkedLineFeatures = []
         this.fetchResources = this.fetchResources.bind(this)
-        this.onAddAttr = this.onAddAttr.bind(this)
         this.resourceSelectDialogClose = this.resourceSelectDialogClose.bind(this)
+        this.addAttributeDialogClose = this.addAttributeDialogClose.bind(this)
+        this.addAttributeDialogOpen = this.addAttributeDialogOpen.bind(this)
+        this.onAddAttrChange = this.onAddAttrChange.bind(this)
+        this.onAddAttribute = this.onAddAttribute.bind(this)
         this.resourceSelectDialogOpen = this.resourceSelectDialogOpen.bind(this)
         this.resultsDialogClose = this.resultsDialogClose.bind(this)
         this.outLayersDialogClose = this.outLayersDialogClose.bind(this)
@@ -70,6 +77,33 @@ export default class App extends Component {
                 open: true
             }
         })
+    }
+    addAttributeDialogClose() {
+        this.setState({
+            addAttributeDialog: {
+                ...this.state.addAttributeDialog,
+                open: false
+            }
+        })
+    }
+    addAttributeDialogOpen() {
+        this.setState({
+            addAttributeDialog: {
+                ...this.state.addAttributeDialog,
+                open: true
+            }
+        })
+    }
+    onAddAttrChange(e){
+        this.setState({
+            addAttributeDialog: {
+                ...this.state.addAttributeDialog,
+                [e.target.name]: e.target.value,
+            },
+        })
+    }
+    onAddAttribute(){
+        console.log({...this.state.addAttributeDialog})
     }
     resultsDialogClose() {
         this.setState({
@@ -422,11 +456,18 @@ export default class App extends Component {
             attributeManager:{
                 ...this.state.attributeManager,
                 selectedResource: this.state.resourceSelectInput.selectedResource,
-                onAddAttr: this.onAddAttr,
+                onAddAttr: this.addAttributeDialogOpen,
             },
             resultsDialog: {
                 ...this.state.resultsDialog,
                 handleClose: this.resultsDialogClose,
+            },
+            addAttributeDialog: {
+                ...this.state.addAttributeDialog,
+                loading: this.state.loading,
+                handleClose: this.addAttributeDialogClose,
+                onChange: this.onAddAttrChange,
+                onAdd: this.onAddAttribute,
             },
             outLayersDialog: {
                 ...this.state.outLayersDialog,

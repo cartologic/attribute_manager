@@ -5,6 +5,7 @@ import PublishForm from './PublishForm'
 import ResourceSelectInput from './ResourceSelectInput'
 import ResourceSelectDialog from './ResourceSelectDialog'
 import AttributesTable from './AttributesTable'
+import AddAttributeDialog from './AddAttributeDialog'
 import ResultsDialog from './ResultsDialog'
 import OutLayersDialog from './OutLayersDialog'
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -20,6 +21,7 @@ export default (props) => {
     resourceSelectInput,
     resourceSelectDialog,
     attributeManager,
+    addAttributeDialog,
   } = props
   const classes = useStyles();
   return (
@@ -30,6 +32,7 @@ export default (props) => {
           <ResourceSelectInput {...resourceSelectInput}/>
           <ResourceSelectDialog {...resourceSelectDialog}/>
           <AttributesTable {...attributeManager}/>
+          <AddAttributeDialog {...addAttributeDialog}/>
         </Paper>
       </Container>
     </div>
