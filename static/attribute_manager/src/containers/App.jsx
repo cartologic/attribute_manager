@@ -102,8 +102,26 @@ export default class App extends Component {
             },
         })
     }
-    onAddAttribute(){
-        console.log({...this.state.addAttributeDialog})
+    async onAddAttribute(){
+        const attributeName = this.state.addAttributeDialog.attributeName
+        const attributeType = this.state.addAttributeDialog.attributeType
+        const layerName = this.state.resourceSelectInput.selectedResource.name
+        let form = new FormData();
+        form.append('layer_name', layerName)
+        form.append('attribute_name', attributeName)
+        form.append('attribute_type', attributeType)
+        form.append('csrfmiddlewaretoken', getCRSFToken())
+        const res = await fetch(this.urls.create_attribute, {
+            method: 'POST',
+            body: form,
+            credentials: 'same-origin',
+        })
+        if (res.status == 200) {
+            console.log("Success")
+        }
+        if (res.status == 500){
+            console.log('Failed to add attribute!')
+        }
     }
     resultsDialogClose() {
         this.setState({
