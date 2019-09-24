@@ -81,15 +81,17 @@ class GeoserverPublisher(object):
         if req.status_code == 201:
             return True
         return False
-    
-    def recalculate_layer_attributes(self, tablename, layername):
+
+    def recalculate_layer_attributes(self, tablename, layername, attrs=None):
         url = urljoin(self.featureTypes_url, layername)
-        querystring = {"recalculate":"()"}
-        json={
+        print(url)
+        attrs_str = [str(attr)+',' for attr in attrs] if attrs else ''
+        querystring = {"recalculate": "({})".format(attrs_str)}
+        json = {
             "featureType": {
-                    "name": layername,
-                    "nativeName": tablename
-                }
+                "name": layername,
+                "nativeName": tablename
+            }
         }
         headers = {
             'accept': "application/json",
@@ -97,18 +99,28 @@ class GeoserverPublisher(object):
             'cache-control': "no-cache",
         }
         response = requests.request(
-            "PUT", 
-            url, 
-            json=json, 
-            headers=headers, 
-            params=querystring, 
+            "PUT",
+            url,
+            json=json,
+            headers=headers,
+            params=querystring,
             auth=(self.username, self.password)
         )
-        print(response.ok, response.text)
         logger.error("url: {}, status:{}".format(
             self.featureTypes_url, response.status_code))
         logger.error(response.text)
         if response.status_code == 201:
+            return True
+        return False
+
+    def reset_geoserver_stores(self):
+        url = urljoin(self.base_url, 'rest', 'reset')
+        response = requests.request(
+            "PUT",
+            url,
+            auth=(self.username, self.password)
+        )
+        if response.status_code == 200:
             return True
         return False
 
@@ -273,8 +285,9 @@ class GeonodePublisher(object):
             exception_type, error, traceback = sys.exc_info()
         else:
             if layer:
-                #layer.set_default_permissions()
-                perms = {u'users': {u'AnonymousUser': [], self.owner: [u'view_resourcebase', u'download_resourcebase', u'change_resourcebase_metadata', u'change_layer_data', u'change_layer_style', u'change_resourcebase', u'delete_resourcebase', u'change_resourcebase_permissions', u'publish_resourcebase']}, u'groups': {}}
+                # layer.set_default_permissions()
+                perms = {u'users': {u'AnonymousUser': [], self.owner: [u'view_resourcebase', u'download_resourcebase', u'change_resourcebase_metadata', u'change_layer_data',
+                                                                       u'change_layer_style', u'change_resourcebase', u'delete_resourcebase', u'change_resourcebase_permissions', u'publish_resourcebase']}, u'groups': {}}
                 layer.set_permissions(perms)
             return layer
 
@@ -288,6 +301,11 @@ def publish_in_geonode(table_name, owner):
     gn_publisher = GeonodePublisher(owner=owner)
     return gn_publisher.publish(table_name)
 
-def recalculate_geoserver_layer_attributes(table_name):
+
+def recalculate_geoserver_layer_attributes(table_name, attrs):
     gs_publisher = GeoserverPublisher()
-    gs_publisher.recalculate_layer_attributes(table_name, table_name)
+    gs_publisher.recalculate_layer_attributes(table_name, table_name, attrs)
+
+def refresh_geoserver():
+    gs_publisher = GeoserverPublisher()
+    gs_publisher.reset_geoserver_stores()
