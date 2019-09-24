@@ -65,3 +65,23 @@ class LayerAttributeManager(object):
                 break
         conn = None
         return index
+
+    def delete_attribute(self, layer_name, attr):
+        ''' 
+        Deletes attribute / field to an existing layer table, 
+        '''
+        conn = ogr.Open(self.connection_string, 1)
+        layer = conn.GetLayer(layer_name)
+        layer_defn = layer.GetLayerDefn()
+        # Get Field index
+        index = None
+        fields_count = layer_defn.GetFieldCount()
+        for i in range(fields_count):
+            field_defn = layer_defn.GetFieldDefn(i)
+            name = field_defn.GetName()
+            if name == attr: 
+                index = i
+                break
+        # Delete Attr / field from layer table
+        if index: 
+            layer.DeleteField(index)
