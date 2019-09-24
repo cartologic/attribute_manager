@@ -531,9 +531,42 @@ export default class App extends Component {
         this.fetchResources
         )
     }
-    onAttrDelete(){
-        const attr = this.state.deleteAttributeDialog.attributeName
-        console.log({attr})
+    async onAttrDelete(){
+        this.setState({loading: true})
+        const attributeName = this.state.deleteAttributeDialog.attributeName
+        const layerName = this.state.resourceSelectInput.selectedResource.name
+        const url = this.urls.delete_attribute
+        let form = new FormData();
+        form.append('layer_name', layerName)
+        form.append('attribute_name', attributeName)
+        form.append('csrfmiddlewaretoken', getCRSFToken())
+        const res = await fetch(url, {
+            method: 'POST',
+            body: form,
+            credentials: 'same-origin',
+        })
+        if (res.status == 200) {
+            this.setState({
+                loading: false,
+                deleteAttributeDialog:{
+                    ...this.state.deleteAttributeDialog,
+                    success: true,
+                    fail: false,
+                }
+            },
+            this.getLayerAttributes
+            )
+        }
+        if (res.status == 500){
+            this.setState({
+                loading: false,
+                deleteAttributeDialog:{
+                    ...this.state.deleteAttributeDialog,
+                    success: false,
+                    fail: true,
+                }
+            })
+        }
     }
     render() {
         const props = {
