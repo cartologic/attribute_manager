@@ -80,6 +80,36 @@ def create_attribute(request):
 
 
 @login_required
+def delete_attribute(request):
+    if request.method == 'POST':
+        layer_name = request.POST.get('layer_name', None)
+        attribute_name = request.POST.get('attribute_name', None)
+
+        # 1. Delete attribute Process
+        connection_string = create_connection_string()
+        lam = LayerAttributeManager(connection_string)
+        # try:
+        lam.delete_attribute(str(layer_name), str(attribute_name))
+        # except Exception as e:
+        #     print('Error while deleteing attribute!', e)
+        #     json_response = {"status": False,
+        #                      "message": "Error while deleting attribute!"}
+        #     return JsonResponse(json_response, status=500)
+
+        # 2. Recalculate attributes in GeoServer
+        recalculate_geoserver_layer_attributes(layer_name, attrs=[attribute_name])
+        # TODO: find another solution hence this will affect the other processes in the same time!
+        # TODO: Refresh geoserver could be a less frequent process, so it is okay to keep that way, however an that handles reset and reload geoserver catalog will be great!
+        # Refresh and reset geoserver datastores!
+        refresh_geoserver()
+
+        # 3. Set Attributes in GeoNode
+        layer = Layer.objects.get(name=layer_name)
+        set_attributes_from_geoserver(layer, overwrite=True)
+        return JsonResponse({'success': True}, status=200)
+
+
+@login_required
 def test_logic(request):
     connection_string = create_connection_string()
     lam = LayerAttributeManager(connection_string)
