@@ -19,6 +19,12 @@ export default class App extends Component {
                 success: false,
                 fail: false,
             },
+            deleteAttributeDialog: {
+                open: false,
+                attributeName: '',
+                success: false,
+                fail: false,
+            },
             resourceSelectInput: {
                 selectedResource: undefined,
                 errors: {},
@@ -64,6 +70,10 @@ export default class App extends Component {
         this.getLayerAttributes = this.getLayerAttributes.bind(this)
         this.publishChange = this.publishChange.bind(this)
         this.onOutLayerCheck = this.onOutLayerCheck.bind(this)
+        this.deleteAttributeDialogOpen = this.deleteAttributeDialogOpen.bind(this)
+        this.deleteAttributeDialogClose = this.deleteAttributeDialogClose.bind(this)
+        this.onDeleteAttrChange = this.onDeleteAttrChange.bind(this)
+        this.onAttrDelete = this.onAttrDelete.bind(this)
         this.apply = this.apply.bind(this)
     }
     resourceSelectDialogClose() {
@@ -103,10 +113,38 @@ export default class App extends Component {
             }
         })
     }
+    deleteAttributeDialogClose() {
+        this.setState({
+            deleteAttributeDialog: {
+                ...this.state.deleteAttributeDialog,
+                open: false,
+                success: false,
+                fail: false,
+                attributeName: '',
+                attribute_type: 4,
+            }
+        })
+    }
+    deleteAttributeDialogOpen() {
+        this.setState({
+            deleteAttributeDialog: {
+                ...this.state.deleteAttributeDialog,
+                open: true
+            }
+        })
+    }
     onAddAttrChange(e){
         this.setState({
             addAttributeDialog: {
                 ...this.state.addAttributeDialog,
+                [e.target.name]: e.target.value,
+            },
+        })
+    }
+    onDeleteAttrChange(e){
+        this.setState({
+            deleteAttributeDialog: {
+                ...this.state.deleteAttributeDialog,
                 [e.target.name]: e.target.value,
             },
         })
@@ -493,6 +531,10 @@ export default class App extends Component {
         this.fetchResources
         )
     }
+    onAttrDelete(){
+        const attr = this.state.deleteAttributeDialog.attributeName
+        console.log({attr})
+    }
     render() {
         const props = {
             urls: this.urls,
@@ -513,6 +555,15 @@ export default class App extends Component {
                 ...this.state.attributeManager,
                 selectedResource: this.state.resourceSelectInput.selectedResource,
                 onAddAttr: this.addAttributeDialogOpen,
+                onDeleteAttr: this.deleteAttributeDialogOpen,
+            },
+            deleteAttributeDialog: {
+                ...this.state.deleteAttributeDialog,
+                loading: this.state.loading,
+                attributes: this.state.attributeManager.attributes,              
+                handleClose: this.deleteAttributeDialogClose,  
+                onDelete: this.onAttrDelete,
+                onChange: this.onDeleteAttrChange,
             },
             resultsDialog: {
                 ...this.state.resultsDialog,

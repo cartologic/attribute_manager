@@ -6,8 +6,7 @@ import ResourceSelectInput from './ResourceSelectInput'
 import ResourceSelectDialog from './ResourceSelectDialog'
 import AttributesTable from './AttributesTable'
 import AddAttributeDialog from './AddAttributeDialog'
-import ResultsDialog from './ResultsDialog'
-import OutLayersDialog from './OutLayersDialog'
+import DeleteAttributeDialog from './DeleteAttributeDialog'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 const useStyles = makeStyles(theme => ({
@@ -22,6 +21,7 @@ export default (props) => {
     resourceSelectDialog,
     attributeManager,
     addAttributeDialog,
+    deleteAttributeDialog
   } = props
   const classes = useStyles();
   return (
@@ -33,6 +33,7 @@ export default (props) => {
           <ResourceSelectDialog {...resourceSelectDialog}/>
           <AttributesTable {...attributeManager}/>
           <AddAttributeDialog {...addAttributeDialog}/>
+          <DeleteAttributeDialog {...deleteAttributeDialog}/>
         </Paper>
       </Container>
     </div>

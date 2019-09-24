@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
@@ -27,6 +28,11 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         bottom: '10px',
         right: '10px',
+    },
+    fabDelete: {
+        position: 'absolute',
+        bottom: '10px',
+        right: '60px',
     },
     title: {
         margin: '8px',
@@ -52,6 +58,7 @@ export default (props) => {
         attributes,
         selectedResource,
         onAddAttr,
+        onDeleteAttr,
     } = props
     return (
         <div className={classes.root}>
@@ -78,6 +85,12 @@ export default (props) => {
                 selectedResource &&
                 <Fab color="primary" onClick={onAddAttr} className={classes.fab} size={'small'}>
                     <AddIcon />
+                </Fab>
+            }
+            {
+                attributes.length > 0 &&
+                <Fab color="primary" onClick={onDeleteAttr} className={classes.fabDelete} size={'small'}>
+                    <DeleteIcon />
                 </Fab>
             }
         </div>
