@@ -59,7 +59,7 @@ export default (props) => {
         maxWidth={'xl'}
       >
         <div className={classes.dialogHeader}>
-          <DialogTitle id="alert-dialog-title" className={classes.dialogTitle}>Add Attribute:</DialogTitle>
+          <DialogTitle id="alert-dialog-title" className={classes.dialogTitle}>Delete Attribute:</DialogTitle>
           <Button onClick={handleClose} color="primary" disabled={loading}>
             <CloseIcon />
           </Button>
