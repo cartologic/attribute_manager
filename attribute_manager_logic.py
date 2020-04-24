@@ -83,5 +83,5 @@ class LayerAttributeManager(object):
                 index = i
                 break
         # Delete Attr / field from layer table
-        if index: 
+        if index is not None: 
             layer.DeleteField(index)
